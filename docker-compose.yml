@@ -1,0 +1,78 @@
+version: '3.9'
+
+# ─── DocNear Local Dev Stack ──────────────────────────────────────────────────
+# Services: MongoDB, Redis, RedisInsight (Redis UI)
+#
+# Usage:
+#   docker compose up -d          → start all services in background
+#   docker compose down           → stop all services
+#   docker compose down -v        → stop + remove volumes (clean slate)
+#
+# Ports:
+#   MongoDB:      27017
+#   Redis:        6379
+#   RedisInsight: 8001  → open http://localhost:8001
+#
+# After starting, use this DATABASE_URL in backend/.env:
+#   mongodb://docnear:docnear_dev_password@localhost:27017/docnear?authSource=admin
+
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: docnear_mongo
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: docnear
+      MONGO_INITDB_ROOT_PASSWORD: docnear_dev_password
+      MONGO_INITDB_DATABASE: docnear
+    volumes:
+      - docnear_mongo_data:/data/db
+    networks:
+      - docnear_network
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: docnear_redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    command: redis-server --appendonly yes
+    volumes:
+      - docnear_redis_data:/data
+    networks:
+      - docnear_network
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: docnear_redis_insight
+    restart: unless-stopped
+    ports:
+      - '8001:5540'
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - docnear_network
+
+volumes:
+  docnear_mongo_data:
+    driver: local
+  docnear_redis_data:
+    driver: local
+
+networks:
+  docnear_network:
+    driver: bridge

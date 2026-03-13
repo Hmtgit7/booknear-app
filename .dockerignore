@@ -1,0 +1,25 @@
+# VCS
+.git
+.gitignore
+
+# Dependencies
+**/node_modules
+
+# Build artifacts
+**/.next
+**/dist
+**/coverage
+**/.turbo
+
+# Logs and env files
+**/*.log
+.env
+.env.*
+
+# IDE
+.vscode
+.idea
+
+# OS files
+.DS_Store
+Thumbs.db
