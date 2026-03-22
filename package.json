@@ -1,67 +1,37 @@
 {
-  "name": "docnear-platform",
+  "name": "booknear-app",
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.31.0",
-  "engines": {
-    "node": "^20.19.0 || ^22.13.0 || >=24",
-    "pnpm": ">=10.0.0"
-  },
   "scripts": {
     "dev": "turbo run dev --parallel",
-    "dev:backend": "turbo run dev --filter=backend",
-    "dev:frontend": "turbo run dev --filter=frontend",
+    "dev:backend": "pnpm --filter backend dev",
+    "dev:frontend": "pnpm --filter frontend dev",
     "build": "turbo run build",
-    "build:prod": "pnpm typecheck && turbo run build",
     "lint": "turbo run lint",
-    "test": "turbo run test",
     "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
     "check": "pnpm lint && pnpm typecheck && pnpm test",
-    "smoke": "bash scripts/smoke.sh",
-    "clean": "turbo run clean --continue && node -e \"try{require('fs').rmSync('.turbo',{recursive:true,force:true})}catch{}\"",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "clean": "turbo run clean --continue",
     "prepare": "husky",
-    "commit": "cz"
+    "commitlint": "commitlint --from=HEAD~1 --to=HEAD --verbose"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.6.1",
-    "@commitlint/config-conventional": "^19.6.1",
-    "@eslint/js": "^9.18.0",
-    "commitizen": "^4.3.1",
-    "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^10.0.3",
-    "globals": "^16.0.0",
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.3.2",
-    "prettier": "^3.5.3",
-    "turbo": "^2.3.3",
-    "typescript-eslint": "^8.20.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "lucide-react": "^0.468.0",
-      "@docnear/store": "link:frontend/packages/store",
-      "@docnear/types": "link:frontend/packages/types"
-    }
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
+    "lint-staged": "^16.2.1",
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.8"
   },
   "lint-staged": {
-    "backend/src/**/*.ts": [
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
       "prettier --write"
     ],
-    "frontend/**/*.{ts,tsx}": [
-      "prettier --write"
-    ],
-    "**/*.{json,md,yml,yaml}": [
+    "*.{json,md,yml,yaml}": [
       "prettier --write"
     ]
-  },
-  "dependencies": {
-    "@docnear/store": "link:frontend/packages/store",
-    "@docnear/types": "link:frontend/packages/types"
   }
 }

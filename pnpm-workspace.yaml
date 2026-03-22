@@ -1,7 +1,4 @@
 packages:
-  - 'backend'
-  - 'frontend'
-
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
+  - backend
+  - frontend
+  - packages/*
