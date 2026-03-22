@@ -34,7 +34,8 @@ jobs:
         run: pnpm typecheck
 
       - name: Test
-        run: pnpm test
+        run: pnpm test:cov
 
       - name: Build
+        if: success()
         run: pnpm build
