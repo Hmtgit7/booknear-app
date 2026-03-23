@@ -43,9 +43,9 @@ model User {
   customer          Customer?
   salonOwner        SalonOwner?
   salonStaff        SalonStaff?
-  appointments      Appointment[]
   reviews           Review[]
   payments          Payment[]
+  notifications     Notification[]
   
   // Metadata
   createdAt         DateTime @default(now())
@@ -163,7 +163,6 @@ model Salon {
   @@index([ownerId])
   @@index([city])
   @@index([status])
-  @@fulltext([name, city])
 }
 
 model SalonStaff {

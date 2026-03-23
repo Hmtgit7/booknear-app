@@ -1,26 +1,218 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f4ef;
+  --foreground: #152227;
+  --surface: #fffdf9;
+  --muted: #6d6e68;
+  --accent: #0f766e;
+  --accent-strong: #14532d;
+  --danger: #9f1239;
+  --ring: #2f7f76;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-dm-sans);
+  --font-mono: var(--font-space-mono);
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(circle at 15% 10%, #d3f2df 0, transparent 35%),
+    radial-gradient(circle at 85% 25%, #fce1b4 0, transparent 40%),
+    radial-gradient(circle at 50% 100%, #d8f0fa 0, transparent 45%),
+    var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-dm-sans), sans-serif;
+}
+
+.page-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.auth-stage {
+  width: min(1040px, 100%);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  animation: rise-in 460ms ease-out;
+}
+
+.auth-intro,
+.auth-card {
+  border-radius: 24px;
+  border: 1px solid rgba(21, 34, 39, 0.12);
+  background: color-mix(in oklab, var(--surface) 92%, white 8%);
+  box-shadow: 0 24px 50px -32px rgba(15, 36, 38, 0.35);
+  padding: 28px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-strong);
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.auth-intro h1 {
+  font-family: var(--font-playfair), serif;
+  font-size: clamp(2rem, 6vw, 3.3rem);
+  line-height: 1.06;
+  margin-top: 10px;
+}
+
+.auth-intro p {
+  margin-top: 14px;
+  max-width: 38ch;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.status-row {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+}
+
+.status-row span {
+  background: rgba(15, 118, 110, 0.14);
+  color: var(--accent-strong);
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.status-row code {
+  color: var(--muted);
+  font-family: var(--font-space-mono), monospace;
+}
+
+.mode-switch {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.mode-switch button {
+  border: 1px solid rgba(21, 34, 39, 0.12);
+  background: white;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mode-switch .active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.auth-form {
+  display: grid;
+  gap: 12px;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.auth-form input,
+.auth-form select {
+  width: 100%;
+  border: 1px solid rgba(21, 34, 39, 0.2);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: white;
+  color: var(--foreground);
+  outline: none;
+}
+
+.auth-form input:focus,
+.auth-form select:focus {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 25%, white 75%);
+}
+
+.primary-btn,
+.secondary-btn {
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  padding: 11px 14px;
+  cursor: pointer;
+}
+
+.primary-btn {
+  margin-top: 4px;
+  background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+  color: white;
+}
+
+.secondary-btn {
+  background: white;
+  border: 1px solid rgba(21, 34, 39, 0.2);
+  color: var(--foreground);
+}
+
+.profile-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.profile-panel h2 {
+  font-size: 1.25rem;
+  font-family: var(--font-playfair), serif;
+}
+
+.notice {
+  margin-top: 14px;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+}
+
+.notice.error {
+  background: color-mix(in oklab, var(--danger) 15%, white 85%);
+  color: var(--danger);
+}
+
+.notice.success {
+  background: color-mix(in oklab, var(--accent) 18%, white 82%);
+  color: var(--accent-strong);
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 940px) {
+  .auth-stage {
+    grid-template-columns: 1.15fr 1fr;
+  }
+
+  .auth-intro,
+  .auth-card {
+    padding: 36px;
+  }
 }
