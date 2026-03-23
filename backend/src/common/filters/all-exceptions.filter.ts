@@ -17,6 +17,11 @@ interface ErrorResponse {
   error?: string;
 }
 
+interface HttpExceptionResponseShape {
+  message?: string | string[];
+  error?: string;
+}
+
 /**
  * Global Exception Filter
  * Handles all exceptions and standardizes error responses
@@ -38,19 +43,19 @@ export class AllExceptionsFilter implements ExceptionFilter {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
 
-      if (typeof exceptionResponse === 'object') {
-        const responseObj = exceptionResponse as any;
+      if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
+        const responseObj = exceptionResponse as HttpExceptionResponseShape;
         message = responseObj.message || exception.message;
         error = responseObj.error || exception.name;
       } else {
-        message = exceptionResponse as string;
+        message = exceptionResponse;
       }
     } else if (exception instanceof Error) {
       this.logger.error(exception.message, exception.stack);
       message = exception.message;
       error = exception.constructor.name;
     } else {
-      this.logger.error('Unknown error:', exception);
+      this.logger.error('Unknown error', String(exception));
       message = 'An unknown error occurred';
     }
 

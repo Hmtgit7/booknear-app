@@ -9,6 +9,10 @@ import { Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { Request, Response } from 'express';
 
+interface ErrorWithStatus extends Error {
+  status?: number;
+}
+
 /**
  * Logging Interceptor
  * Logs all incoming requests and outgoing responses
@@ -17,11 +21,11 @@ import { Request, Response } from 'express';
 export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger(LoggingInterceptor.name);
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const request = context.switchToHttp().getRequest<Request>();
     const response = context.switchToHttp().getResponse<Response>();
 
-    const { method, url, body } = request;
+    const { method, url } = request;
     const userAgent = request.get('user-agent') || '';
     const startTime = Date.now();
 
@@ -34,15 +38,17 @@ export class LoggingInterceptor implements NestInterceptor {
           `${method} ${url} - ${statusCode} - ${duration}ms - ${userAgent}`,
         );
       }),
-      catchError((error) => {
+      catchError((error: unknown) => {
         const duration = Date.now() - startTime;
-        const statusCode = error.status || 500;
+        const err = error as ErrorWithStatus;
+        const statusCode = err.status || 500;
+        const message = err.message || 'Unknown error';
 
         this.logger.error(
-          `${method} ${url} - ${statusCode} - ${duration}ms - ${error.message}`,
+          `${method} ${url} - ${statusCode} - ${duration}ms - ${message}`,
         );
 
-        throw error;
+        throw err;
       }),
     );
   }

@@ -8,7 +8,6 @@ import {
   Get,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import type { AuthService, AuthTokenResponse } from './auth.service';
 import { AuthService as AuthServiceImpl } from './auth.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
@@ -43,7 +42,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'User login' })
-  async login(@Body() loginDto: LoginDto): Promise<AuthResponseDto> {
+  login(@Body() loginDto: LoginDto): AuthResponseDto {
     // TODO: Implement actual login logic with database verification
     // This is a placeholder that demonstrates the token response structure
 
@@ -65,7 +64,7 @@ export class AuthController {
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'User registration' })
-  async register(@Body() registerDto: RegisterDto): Promise<AuthResponseDto> {
+  register(@Body() registerDto: RegisterDto): AuthResponseDto {
     // TODO: Implement actual registration logic with database persistence
     // This is a placeholder that demonstrates the response structure
 
@@ -88,7 +87,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get current user profile' })
-  async getProfile(@CurrentUser() user: JwtPayload): Promise<JwtPayload> {
+  getProfile(@CurrentUser() user: JwtPayload): JwtPayload {
     return user;
   }
 }

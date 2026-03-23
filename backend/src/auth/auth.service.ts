@@ -1,11 +1,7 @@
-import {
-  Injectable,
-  BadRequestException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import type { UserRole } from '@prisma/client';
 import type { JwtPayload } from './jwt.strategy';
+import type { UserRole } from '../common/decorators/roles.decorator';
 
 export interface AuthTokenResponse {
   accessToken: string;
@@ -51,8 +47,8 @@ export class AuthService {
    */
   validateToken(token: string): JwtPayload {
     try {
-      return this.jwtService.verify(token);
-    } catch (error) {
+      return this.jwtService.verify<JwtPayload>(token);
+    } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }
   }
@@ -61,6 +57,28 @@ export class AuthService {
    * Decode JWT token without verification
    */
   decodeToken(token: string): JwtPayload | null {
-    return this.jwtService.decode(token) as JwtPayload | null;
+    const decoded: unknown = this.jwtService.decode(token);
+    if (!decoded || typeof decoded !== 'object') {
+      return null;
+    }
+
+    const value = decoded as Record<string, unknown>;
+    if (
+      typeof value.id !== 'string' ||
+      typeof value.email !== 'string' ||
+      typeof value.role !== 'string' ||
+      typeof value.iat !== 'number' ||
+      typeof value.exp !== 'number'
+    ) {
+      return null;
+    }
+
+    return {
+      id: value.id,
+      email: value.email,
+      role: value.role,
+      iat: value.iat,
+      exp: value.exp,
+    };
   }
 }

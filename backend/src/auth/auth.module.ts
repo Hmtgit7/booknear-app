@@ -13,12 +13,15 @@ import { PrismaService } from '../database/prisma.service';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
-        const expiresIn = configService.get<string>('JWT_EXPIRATION', '7d');
+      useFactory: (configService: ConfigService) => {
+        const secret = configService.getOrThrow<string>('JWT_SECRET');
+        const expiresInSeconds =
+          configService.get<number>('JWT_EXPIRATION_SECONDS') ??
+          7 * 24 * 60 * 60;
         return {
-          secret: configService.get<string>('JWT_SECRET'),
+          secret,
           signOptions: {
-            expiresIn: expiresIn as any, // Will be converted to seconds by the library
+            expiresIn: expiresInSeconds,
           },
         };
       },

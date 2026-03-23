@@ -15,8 +15,12 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return health response payload', () => {
+      const response = appController.getHello();
+
+      expect(response.message).toBe('Hello World!');
+      expect(response.status).toBe('ok');
+      expect(new Date(response.timestamp).toString()).not.toBe('Invalid Date');
     });
   });
 });

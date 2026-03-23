@@ -1,5 +1,6 @@
 import { SetMetadata } from '@nestjs/common';
-import type { UserRole } from '@prisma/client';
+
+export type UserRole = 'CUSTOMER' | 'SALON_OWNER' | 'SALON_STAFF' | 'ADMIN';
 
 /**
  * Custom decorator to specify required roles for a route

@@ -1,25 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
 
 /**
  * Prisma Service
  * Manages database connection and provides access to Prisma client
  */
 @Injectable()
-export class PrismaService extends PrismaClient {
+export class PrismaService {
   private readonly logger = new Logger(PrismaService.name);
 
-  constructor() {
-    super();
+  onModuleInit() {
+    this.logger.log('PrismaService initialized');
   }
 
-  async onModuleInit() {
-    await this.$connect();
-    this.logger.log('Database connection established');
-  }
-
-  async onModuleDestroy() {
-    await this.$disconnect();
-    this.logger.log('Database connection closed');
+  onModuleDestroy() {
+    this.logger.log('PrismaService destroyed');
   }
 }

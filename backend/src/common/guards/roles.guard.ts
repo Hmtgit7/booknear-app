@@ -5,7 +5,13 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import type { UserRole } from '@prisma/client';
+import type { UserRole } from '../decorators/roles.decorator';
+
+interface RequestWithRoleUser {
+  user?: {
+    role: UserRole;
+  };
+}
 
 /**
  * Role-Based Access Control Guard
@@ -26,7 +32,7 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<RequestWithRoleUser>();
     const user = request.user;
 
     if (!user) {
